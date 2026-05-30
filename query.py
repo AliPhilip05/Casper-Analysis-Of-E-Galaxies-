@@ -17,3 +17,17 @@ results = service.search(my_adql_query)
 results_table = results.to_table()
 
 print(results_table)
+
+
+my_adql_query = """
+SELECT column_name, datatype, description
+FROM TAP_SCHEMA.columns
+WHERE table_name = 'dp02_dc2_catalogs.Object'
+ORDER BY column_name
+"""
+
+service = get_tap_service("tap")
+results = service.search(my_adql_query)
+results_table = results.to_table()
+
+print(results_table)
