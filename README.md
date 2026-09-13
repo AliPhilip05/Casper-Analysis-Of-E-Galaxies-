@@ -116,18 +116,10 @@ Concentration
 Concentration describes how centrally concentrated the galaxy's light is.
 The implementation uses the ratio between the radii containing 80% and 20% of the estimated flux:
 
-C
-=
-5
-log
-⁡
-10
-(
-r
-80
-r
-20
-)
+
+\[
+C = 5\log_{10}\left(\frac{r_{80}}{r_{20}}\right)
+\]
 
 where:
 
