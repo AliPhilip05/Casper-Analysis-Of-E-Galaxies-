@@ -280,27 +280,6 @@ CAS Results
         ▼
 CSV Output
 
-Project Structure
-A recommended project structure is:
-CAS-EA-Galaxy-Analysis/
-│
-├── data.input/
-│   └── FINAL LIST.csv
-│
-├── scripts/
-│   └── cas_analysis.py
-│
-├── output/
-│   └── cas_results_YYYYMMDD_HHMMSS.csv
-│
-├── dc2_objects.txt
-│
-├── latest_file.txt
-│
-└── README.md
-
-The exact directory structure may differ depending on the user's Rubin Science Platform environment.
-Requirements
 The pipeline requires Python and the following packages:
 numpy
 pandas
