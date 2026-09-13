@@ -441,5 +441,5 @@ Department of Physics and Astronomy
 The City University of New York — College of Staten Island
 
 Status
-🚧 Project Status: Ongoing / Preliminary Research
+Project Status: Ongoing / Preliminary Research
 This repository contains an evolving research pipeline. Methods and implementations may change as the CAS analysis is validated and expanded to larger LSST datasets.
