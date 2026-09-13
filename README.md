@@ -5,6 +5,7 @@ Advisor: Dr. Charles Liu
 The City University of New York — College of Staten Island
 Department of Physics and Astronomy
 2800 Victory Blvd, Staten Island, NY 10314
+
 Overview
 This project develops an automated pipeline for analyzing the morphology of post-starburst (E+A) galaxies using data from the Vera C. Rubin Observatory's Legacy Survey of Space and Time (LSST).
 Galaxy morphology provides important information about how galaxies form and evolve. In particular, disturbed morphologies can provide evidence of galaxy mergers and interactions. The Concentration, Asymmetry, and Smoothness (CAS) framework, introduced by Conselice (2003), provides a quantitative method for characterizing these morphological features.
@@ -38,14 +39,14 @@ Candidate galaxies are then selected using photometric criteria designed to isol
 
 The selection criteria include:
 
-u-band magnitude
+u-band Magnitude
 15.0
 ≤
 u
 ≤
 21.0
 
-u − g color
+u − g Color
 1.0
 ≤
 u
@@ -54,7 +55,7 @@ g
 ≤
 1.8
 
-g − r color
+g − r Color
 0.3
 ≤
 g
@@ -109,33 +110,53 @@ Smoothness (S)
 These parameters are calculated independently for each galaxy and each photometric band.
 The final dataset therefore contains CAS measurements across the:
 
-u, g, r, i, z, y
+u
+,
+ 
+g
+,
+ 
+r
+,
+ 
+i
+,
+ 
+z
+,
+ 
+y
 
 bands.
+
 Concentration
 Concentration describes how centrally concentrated the galaxy's light is.
 The implementation uses the ratio between the radii containing 80% and 20% of the estimated flux:
 
-
-\[
-C = 5\log_{10}\left(\frac{r_{80}}{r_{20}}\right)
-\]
+C
+=
+5
+log
+⁡
+10
+(
+r
+80
+r
+20
+)
 
 where:
 
-r
-80
- is the estimated radius containing 80% of the light.
-r
-20
- is the estimated radius containing 20% of the light.
+$r_{80}$ is the estimated radius containing 80% of the light.
+$r_{20}$ is the estimated radius containing 20% of the light.
 Higher concentration values indicate that the galaxy's light is more strongly concentrated toward its center.
-The code protects against division by zero by assigning a value of 0.0 when 
+The code protects against division by zero by assigning a value of 0.0 when:
+
 r
 20
 =
 0
-.
 
 Asymmetry
 Asymmetry measures how different a galaxy is from itself after a 180-degree rotation.
@@ -162,16 +183,9 @@ g
 
 where:
 
-I
- is the original flux distribution.
-I
-180
- is the flux distribution rotated by 180 degrees.
-A
-b
-k
-g
- is the background correction.
+$I$ is the original flux distribution.
+$I_{180}$ is the flux distribution rotated by 180 degrees.
+$A_{\mathrm{bkg}}$ is the background correction.
 A larger asymmetry value generally indicates a more disturbed or irregular morphology, which can be associated with interactions or mergers.
 The current implementation uses an array-reversal approach as an approximation to the 180-degree comparison.
 
@@ -198,10 +212,7 @@ b
 k
 g
 
-where 
-I
-S
- represents the smoothed flux distribution.
+where $I_S$ represents the smoothed flux distribution.
 
 The smoothing scale is dynamically determined from the estimated Petrosian/galaxy radius:
 
@@ -219,13 +230,7 @@ The pipeline estimates a characteristic galaxy radius using the second-order sha
 r_total = np.sqrt(np.abs(shape_xx + shape_yy))
 
 The trace of the shape-moment tensor is used as an approximation of the spatial extent of the galaxy.
-The normalized flux is then used to estimate 
-r
-80
- and 
-r
-20
-:
+The normalized flux is then used to estimate $r_{80}$ and $r_{20}$:
 
 flux_norm = (flux - min_flux) / flux_range
 
@@ -240,14 +245,14 @@ The overall workflow is:
 LSST / DP0.2 Catalog
         │
         ▼
-TAP Query
+    TAP Query
         │
         ▼
 Initial Galaxy Sample
         │
         ▼
 Photometric Selection
-(u, u-g, g-r)
+    (u, u-g, g-r)
         │
         ▼
 E+A / Green Valley Candidates
@@ -267,11 +272,12 @@ Process u, g, r, i, z, y Bands
         └──► Calculate Smoothness
         │
         ▼
-CAS Results
+    CAS Results
         │
         ▼
-CSV Output
+    CSV Output
 
+Requirements
 The pipeline requires Python and the following packages:
 numpy
 pandas
@@ -321,12 +327,10 @@ r
 i
 z
 y
-
 For each galaxy/band combination, the following quantities are calculated:
-C
-A
-S
-
+C — Concentration
+A — Asymmetry
+S — Smoothness
 Output
 The results are saved automatically as a timestamped CSV file:
 cas_results_YYYYMMDD_HHMMSS.csv
@@ -343,7 +347,7 @@ C	Concentration
 A	Asymmetry
 S	Smoothness
 
-Example:
+Example Output
 index,objectId,band,C,A,S
 1,123456789,g,3.2145,0.0872,0.1421
 2,987654321,g,2.9183,0.1134,0.2017
@@ -355,10 +359,20 @@ latest_file.txt
 Important Implementation Notes
 Background Corrections
 The theoretical CAS definitions include background corrections:
-A_bkg
-S_bkg
+A
+b
+k
+g
+
+and
+
+S
+b
+k
+g
 
 The current production loop calculates the asymmetry and smoothness values directly from the galaxy flux arrays without explicitly subtracting separately estimated background values.
+
 Future versions should incorporate robust background estimates from blank-sky regions or dedicated background measurements.
 
 180-Degree Rotation
@@ -380,13 +394,7 @@ This project is an ongoing preliminary research effort. Several components of th
 Important limitations include:
 
 The current CAS calculations operate primarily on catalog-level flux measurements rather than full 2D galaxy images.
-The 
-r
-80
- and 
-r
-20
- relationships are approximate.
+The $r_{80}$ and $r_{20}$ relationships are approximate.
 The 180-degree asymmetry calculation should ultimately use 2D image rotation.
 Background corrections require further development.
 The sample-selection criteria identify a Green Valley population and are not, by themselves, a definitive spectroscopic classification of E+A galaxies.
@@ -422,9 +430,7 @@ The development of an automated CAS pipeline provides a foundation for extending
 References
 Conselice, C. J. (2003). The Relationship between Stellar Light Distributions of Galaxies and Their Formation Histories. The Astrophysical Journal Supplement Series, 147, 1–28.
 Vera C. Rubin Observatory. Legacy Survey of Space and Time (LSST).
-
 Rubin Observatory. Rubin Science Platform / Data Preview 0.2 (DP0.2).
-
 Authors
 Isabella Troy Brazoban
 Lorik Fazliu
@@ -435,5 +441,5 @@ Department of Physics and Astronomy
 The City University of New York — College of Staten Island
 
 Status
-Project Status: Ongoing / Preliminary Research
+🚧 Project Status: Ongoing / Preliminary Research
 This repository contains an evolving research pipeline. Methods and implementations may change as the CAS analysis is validated and expanded to larger LSST datasets.
