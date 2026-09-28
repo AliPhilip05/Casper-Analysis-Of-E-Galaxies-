@@ -11,7 +11,7 @@ These three requirements will ensure that regardless of the future changing or r
 
 For those inexperienced with Rust, I will provide basic clarifications for the first function and then proceed to use less detailed documentation after.
 
-'/ Function to calculate the Concentration
+`/ Function to calculate the Concentration
 
 fn calculate_c(r_80:f64, r_20:f64) -> f64 {
 if r_20 == 0 {
@@ -19,8 +19,7 @@ if r_20 == 0 {
 } else {
 let result:f64 = 5.0 * (r_80 / r_20).log10();
 }
-result
-}`
+result}`
 
 `fn calculate_c`
 
