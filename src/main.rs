@@ -1,6 +1,6 @@
 use csv::{ReaderBuilder, WriterBuilder};
 use chrono::Local;
-use std::collections::HashMap;
+// use std::collections::HashMap;
 use std::fs::{self, File};
 use std::path::PathBuf;
 
@@ -96,7 +96,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // READ CSV
     // ---------------------------------------------------------
 
-    let csv_path = "data.input/FINAL LIST.csv";
+    let csv_path = "/Users/aliphilip/Documents/GitHub/Casper-Analysis-Of-E-Galaxies-/Initial Query Code/selected_galaxies_dp1.csv";
 
     let mut reader = ReaderBuilder::new()
         .flexible(true)
@@ -189,16 +189,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // BANDS
     // ---------------------------------------------------------
 
-    let bands = [
-        ("u", |g: &Galaxy| g.u_flux),
-        ("g", |g: &Galaxy| g.g_flux),
-        ("r", |g: &Galaxy| g.r_flux),
-        ("i", |g: &Galaxy| g.i_flux),
-        ("z", |g: &Galaxy| g.z_flux),
-        ("y", |g: &Galaxy| g.y_flux),
-    ];
-
-    // ---------------------------------------------------------
+    let bands: [(&str, fn(&Galaxy) -> f64); 6] = [
+        ("u", |g| g.u_flux),
+        ("g", |g| g.g_flux),
+        ("r", |g| g.r_flux),
+        ("i", |g| g.i_flux),
+        ("z", |g| g.z_flux),
+        ("y", |g| g.y_flux),
+    ];    // ---------------------------------------------------------
     // OUTPUT DATA
     // ---------------------------------------------------------
 
