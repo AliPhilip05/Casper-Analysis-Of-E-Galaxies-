@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14221f">
+  <meta name="description" content="Ali Philip's selected research, software projects, and coursework notes.">
+  <title>APhlip.org — Ali Philip</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="APhlip.org home"><span class="brand-mark">AP</span><span>APhlip<span class="brand-dot">.org</span></span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-icon" aria-hidden="true"></span><span class="sr-only">Toggle navigation</span></button>
+      <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+        <a class="nav-link current" aria-current="page" href="index.html">Home</a>
+        <a class="nav-link" href="research.html">Research</a>
+        <a class="nav-link" href="coursework.html">Coursework &amp; notes</a>
+        <a class="nav-github" href="https://github.com/AliPhilip05" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero page-width">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-rule"></span> ALI PHILIP <span class="eyebrow-sep">/</span> SELECTED WORK</p>
+        <h1>Curiosity, made<br><em>practical.</em></h1>
+        <p class="hero-lede">I work across astronomy, software, and data structures—building projects that make complex ideas easier to explore.</p>
+        <div class="hero-actions">
+          <a class="button button-dark" href="#projects">Explore selected work <span aria-hidden="true">↓</span></a>
+          <a class="text-link" href="research.html">Visit research <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero-footnote"><span class="status-mark"></span> Research · software · learning in public</div>
+      </div>
+      <div class="hero-art code-art" role="img" aria-label="Stylized Rust code editor showing an is_alive heartbeat check">
+        <div class="code-window-top">
+          <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="code-tab"><span class="language-symbol">R</span> main.rs</span>
+          <span class="language-tag">RUST / C++</span>
+        </div>
+        <div class="code-editor">
+          <div class="code-gutter" aria-hidden="true"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span></div>
+          <pre class="code-block"><code><span class="code-purple">use</span> std::time::{Duration, Instant};
+<span class="code-purple">fn</span> <span class="code-blue">is_alive</span>(since: Instant) -> <span class="code-blue">bool</span> {
+  since.elapsed() &lt; Duration::from_secs(5)
+}
+<span class="code-purple">fn</span> <span class="code-blue">main</span>() {
+  <span class="code-purple">let</span> heartbeat = Instant::now();
+  <span class="code-blue">println!</span>(<span class="code-string">"I am alive: {}"</span>, is_alive(heartbeat));
+}</code></pre>
+        </div>
+        <div class="terminal-preview"><span>~/projects</span><strong>$ cargo run</strong><span class="terminal-output">I am alive: true <b>●</b></span></div>
+        <div class="art-caption"><span>RUST</span><span>C++</span><span>BUILD · ITERATE · LEARN</span></div>
+      </div>
+    </section>
+
+    <section class="selected-work page-width" id="projects">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span class="eyebrow-rule"></span> A FEW THINGS I’VE BUILT</p><h2>Selected <em>projects.</em></h2></div>
+        <a class="text-link heading-link" href="https://github.com/AliPhilip05?tab=repositories" target="_blank" rel="noopener noreferrer">All repositories <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <div class="project-grid">
+        <article class="project-card project-featured">
+          <div class="project-meta"><span class="project-number">01</span><span class="project-type">RESEARCH · ASTROPHYSICS</span></div>
+          <div class="project-art project-art-galaxy" aria-hidden="true"><span class="mini-orbit"></span><span class="mini-core"></span><span class="mini-point"></span></div>
+          <h3>Multi-band CAS analysis of E+A galaxies</h3>
+          <p>A preliminary workflow for examining candidate post-starburst galaxy structure across Rubin Observatory’s six photometric bands.</p>
+          <div class="tag-list"><span>LSST DP0.2</span><span>Galaxy morphology</span><span>Rust · Python</span></div>
+          <div class="card-links"><a href="research.html#cas">Read the research notes <span aria-hidden="true">→</span></a><a href="https://github.com/AliPhilip05/Casper-Analysis-Of-E-Galaxies-" target="_blank" rel="noopener noreferrer">Open Casper project <span aria-hidden="true">↗</span></a></div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-meta"><span class="project-number">02</span><span class="project-type">INDEPENDENT · RUST</span></div>
+          <div class="project-art project-art-chess" aria-hidden="true"><span>♞</span><i></i><i></i><i></i><i></i></div>
+          <h3>Chess Project</h3>
+          <p>A self-directed Rust project built around a chess experience, with a staged roadmap for game modes, a web interface, and an engine.</p>
+          <div class="tag-list"><span>Rust</span><span>Game systems</span></div>
+          <div class="card-links"><a href="coursework.html#chess">Read project notes <span aria-hidden="true">→</span></a><a href="https://github.com/AliPhilip05/ChessProject" target="_blank" rel="noopener noreferrer">Open repository <span aria-hidden="true">↗</span></a></div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-meta"><span class="project-number">03</span><span class="project-type">COURSEWORK · CSC 326</span></div>
+          <div class="project-art project-art-queue" aria-hidden="true"><span class="queue-node">01</span><span class="queue-line"></span><span class="queue-node">02</span><span class="queue-line"></span><span class="queue-node queue-node-accent">03</span></div>
+          <h3>Patient flow manager</h3>
+          <p>An interactive hospital workflow assignment combining patient lookup with priority-based operating-room scheduling.</p>
+          <div class="tag-list"><span>C++</span><span>Hash table</span><span>Priority queue</span></div>
+          <div class="card-links"><a href="coursework.html#patients">Read coursework notes <span aria-hidden="true">→</span></a><a href="https://github.com/AliPhilip05/Patients-Managment" target="_blank" rel="noopener noreferrer">Open repository <span aria-hidden="true">↗</span></a></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="crosslink page-width" aria-label="Casper research project">
+      <div class="crosslink-mark" aria-hidden="true">C<span>+</span></div>
+      <div class="crosslink-copy"><p class="eyebrow">A PROJECT WITH ITS OWN SPACE</p><h2>Explore the Casper E+A project.</h2><p>Visit its dedicated GitHub repository for the research overview, implementation, and project materials.</p></div>
+      <div class="crosslink-actions"><a class="button button-light" href="../index.html">Open CAS dashboard <span aria-hidden="true">↗</span></a><a class="crosslink-repo-link" href="https://github.com/AliPhilip05/Casper-Analysis-Of-E-Galaxies-" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a></div>
+    </section>
+
+    <section class="next-steps page-width">
+      <a class="next-card" href="research.html"><span class="next-index">01 / RESEARCH</span><strong>Methods, context, and current limitations</strong><span class="next-arrow" aria-hidden="true">↗</span></a>
+      <a class="next-card" href="coursework.html"><span class="next-index">02 / COURSEWORK &amp; NOTES</span><strong>Assignments and independent project notes</strong><span class="next-arrow" aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer page-width"><a class="brand footer-brand" href="index.html"><span class="brand-mark">AP</span><span>APhlip<span class="brand-dot">.org</span></span></a><span>Ali Philip <span class="footer-sep">·</span> <span id="year">2026</span></span><a href="https://github.com/AliPhilip05" target="_blank" rel="noopener noreferrer">GitHub profile <span aria-hidden="true">↗</span></a></footer>
+</body>
+</html>

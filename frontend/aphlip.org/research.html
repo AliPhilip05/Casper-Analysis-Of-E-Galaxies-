@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14221f">
+  <meta name="description" content="Research overview of a preliminary multi-band CAS analysis of candidate E+A galaxies.">
+  <title>Research — APhlip.org</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="index.html" aria-label="APhlip.org home"><span class="brand-mark">AP</span><span>APhlip<span class="brand-dot">.org</span></span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-icon" aria-hidden="true"></span><span class="sr-only">Toggle navigation</span></button>
+    <nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a class="nav-link" href="index.html">Home</a><a class="nav-link current" aria-current="page" href="research.html">Research</a><a class="nav-link" href="coursework.html">Coursework &amp; notes</a><a class="nav-github" href="https://github.com/AliPhilip05" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></nav>
+  </div></header>
+
+  <main id="main">
+    <section class="page-hero page-width">
+      <p class="eyebrow"><span class="eyebrow-rule"></span> RESEARCH <span class="eyebrow-sep">/</span> ASTROPHYSICS</p>
+      <h1>Reading the shape<br>of a galaxy in <em>transition.</em></h1>
+      <p class="hero-lede">A multi-band Concentration, Asymmetry, and Smoothness (CAS) analysis of Green Valley candidates, developed to explore the structure of post-starburst galaxies in Rubin Observatory data.</p>
+      <div class="hero-actions"><a class="button button-dark" href="https://github.com/AliPhilip05/Casper-Analysis-Of-E-Galaxies-" target="_blank" rel="noopener noreferrer">Open the Casper repository <span aria-hidden="true">↗</span></a><a class="text-link" href="../index.html">Open the CAS dashboard <span aria-hidden="true">↗</span></a></div>
+      <div class="research-stats"><div><strong>6</strong><span>photometric bands · u, g, r, i, z, y</span></div><div><strong>103</strong><span>initial candidates reported in the README</span></div><div><strong>PRELIMINARY</strong><span>prototype measurements; validation remains</span></div></div>
+    </section>
+
+    <section class="research-layout page-width" id="cas">
+      <aside class="research-aside"><p class="eyebrow">PROJECT NOTES</p><a href="#question">01 <span>Research question</span></a><a href="#sample">02 <span>Candidate sample</span></a><a href="#measurements">03 <span>CAS measures</span></a><a href="#limits">04 <span>Current limitations</span></a></aside>
+      <article class="research-article">
+        <section class="article-section" id="question"><p class="eyebrow">01 / RESEARCH QUESTION</p><h2>What can galaxy structure tell us about <em>evolution?</em></h2><p>Post-starburst, or E+A, galaxies are of interest because their recent star-formation histories and present-day structure can offer clues about how galaxies change. Disturbed morphology may be consistent with mergers or interactions, but morphology alone does not confirm an E+A classification.</p><p>This project explores whether multi-band CAS measurements can provide a useful structural view of candidate galaxies. It is an early, catalog-level prototype intended to guide further validation.</p></section>
+        <section class="article-section" id="sample"><p class="eyebrow">02 / DATA &amp; CANDIDATES</p><h2>From a survey catalog to a <em>working sample.</em></h2><p>The query workflow uses the Rubin Science Platform Table Access Protocol (TAP) and the DP0.2 object catalog. The project README describes an initial catalog query followed by Green Valley color and magnitude cuts.</p>
+          <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Selection</th><th>Range</th></tr></thead><tbody><tr><td>u-band magnitude</td><td>15.0 ≤ u ≤ 21.0</td></tr><tr><td>u − g color</td><td>1.0 ≤ u − g ≤ 1.8</td></tr><tr><td>g − r color</td><td>0.3 ≤ g − r ≤ 0.85</td></tr></tbody></table></div>
+          <p>The README reports 103 candidates after applying these cuts. They are Green Valley candidates, not a spectroscopically confirmed E+A sample.</p></section>
+        <section class="article-section" id="measurements"><p class="eyebrow">03 / MEASUREMENT FRAMEWORK</p><h2>Three measures, across <em>six bands.</em></h2><p>The workflow aims to calculate Concentration, Asymmetry, and Smoothness separately for each candidate in the u, g, r, i, z, and y bands.</p>
+          <div class="cas-grid"><article class="cas-card"><span class="cas-letter">C</span><h3>Concentration</h3><p>Compares the radii containing 80% and 20% of the light.</p><div class="equation">C = 5 log<sub>10</sub>(r<sub>80</sub> / r<sub>20</sub>)</div></article><article class="cas-card"><span class="cas-letter">A</span><h3>Asymmetry</h3><p>Compares a light distribution with its 180°-rotated counterpart.</p><div class="equation">A ≈ Σ|I − I<sub>180</sub>| / Σ|I|</div></article><article class="cas-card"><span class="cas-letter">S</span><h3>Smoothness</h3><p>Compares the flux with a smoothed version to capture small-scale structure.</p><div class="equation">S ≈ Σ|I − I<sub>S</sub>| / Σ|I|</div></article></div>
+        </section>
+        <section class="article-section" id="limits"><p class="eyebrow">04 / SCOPE &amp; LIMITATIONS</p><h2>A prototype with clear <em>next steps.</em></h2><p>The project README identifies several areas that require further development before interpreting measurements as physical morphology results:</p><ul class="limit-list"><li>The current calculations use catalog-level flux values, not full two-dimensional galaxy images.</li><li>Radii are approximated from shape moments and need validation against direct measurements.</li><li>Asymmetry uses a one-dimensional reversed flux array rather than rotating an image about a galaxy center.</li><li>Smoothness is calculated from a one-dimensional array, and background terms are not explicitly subtracted.</li><li>The photometric color cuts identify candidates; they do not establish a spectroscopic E+A classification.</li></ul><div class="note-callout"><span class="callout-mark">i</span><p>These measurements are best understood as preliminary workflow outputs. Image-based implementation and validation are needed before drawing morphological conclusions.</p></div>
+          <div class="article-actions"><a class="button button-dark" href="https://github.com/AliPhilip05/Casper-Analysis-Of-E-Galaxies-" target="_blank" rel="noopener noreferrer">Read the project on GitHub <span aria-hidden="true">↗</span></a><a class="text-link" href="../index.html">Explore the dashboard <span aria-hidden="true">↗</span></a></div>
+        </section>
+      </article>
+    </section>
+  </main>
+  <footer class="site-footer page-width"><a class="brand footer-brand" href="index.html"><span class="brand-mark">AP</span><span>APhlip<span class="brand-dot">.org</span></span></a><span>Ali Philip <span class="footer-sep">·</span> <span id="year">2026</span></span><a href="https://github.com/AliPhilip05" target="_blank" rel="noopener noreferrer">GitHub profile <span aria-hidden="true">↗</span></a></footer>
+</body>
+</html>

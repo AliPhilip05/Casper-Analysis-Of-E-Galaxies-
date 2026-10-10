@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101b1b" />
+    <meta name="description" content="A multi-band CAS morphology research dashboard for candidate E+A galaxies in LSST DP0.2." />
+    <title>CAS / E+A — Galaxy Morphology</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#overview" aria-label="CAS E+A dashboard home">
+          <span class="brand-mark" aria-hidden="true"><span></span><i></i></span>
+          <span class="brand-name">CAS <span>/</span> E+A</span>
+        </a>
+        <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+          <a class="nav-link active" href="#overview">Overview</a>
+          <a class="nav-link" href="#measurements">Measurements</a>
+          <a class="nav-link" href="#method">Method</a>
+        </nav>
+        <div class="topbar-right">
+          <span class="status-pill"><span class="status-dot"></span> Preliminary research</span>
+          <span class="topbar-divider"></span>
+          <span class="institution">CSI <span>·</span> CUNY</span>
+        </div>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span></button>
+      </header>
+
+      <main id="overview">
+        <section class="intro section-wrap">
+          <div class="intro-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> MORPHOLOGY RESEARCH <span class="eyebrow-index">01 / 03</span></div>
+            <h1>Reading the shape<br />of a galaxy in <em>transition.</em></h1>
+            <p class="intro-description">A multi-band CAS analysis of Green Valley candidates, built to explore the structural signatures of post-starburst galaxies in Rubin Observatory data.</p>
+            <div class="intro-meta">
+              <span><b>PROJECT</b> LSST DP0.2</span>
+              <span><b>INSTRUMENT</b> Rubin Observatory</span>
+              <span><b>AUTHORS</b> Brazoban · Fazliu · Philip</span>
+            </div>
+          </div>
+          <div class="intro-visual" aria-label="Abstract illustration of a galaxy">
+            <div class="visual-label"><span class="live-pip"></span> MULTI-WAVELENGTH VIEW</div>
+            <div class="galaxy-orbit orbit-one"></div><div class="galaxy-orbit orbit-two"></div><div class="galaxy-core"></div>
+            <div class="galaxy-spark spark-a"></div><div class="galaxy-spark spark-b"></div><div class="galaxy-spark spark-c"></div>
+            <div class="visual-caption"><span>RA 13h 24m 17s</span><span>DEC +12° 08′ 42″</span></div>
+            <div class="visual-bands"><i>u</i><i>g</i><i>r</i><i>i</i><i>z</i><i>y</i></div>
+          </div>
+        </section>
+
+        <section class="metrics section-wrap" aria-label="Project summary">
+          <article class="metric-card metric-primary">
+            <div class="metric-top"><span>SELECTED CANDIDATES</span><span class="metric-index">01</span></div>
+            <div class="metric-value" id="candidateCount">103</div>
+            <div class="metric-foot"><span class="metric-sparkline" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span>from ~100k catalog objects</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>PHOTOMETRIC BANDS</span><span class="metric-index">02</span></div>
+            <div class="metric-value">06<span class="metric-unit"> bands</span></div>
+            <div class="band-mini-list" aria-label="u, g, r, i, z, y bands"><i>u</i><i>g</i><i>r</i><i>i</i><i>z</i><i>y</i></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>CAS MEASUREMENTS</span><span class="metric-index">03</span></div>
+            <div class="metric-value" id="measurementCount">618</div>
+            <div class="metric-foot"><span class="tiny-tag">C</span><span class="tiny-tag">A</span><span class="tiny-tag">S</span><span class="metric-foot-label">per galaxy · per band</span></div>
+          </article>
+          <article class="metric-card metric-state">
+            <div class="metric-top"><span>DATASET</span><span class="metric-index">04</span></div>
+            <div class="dataset-state"><span class="state-orbit"><i></i></span><div><strong id="datasetState">Illustrative preview</strong><small id="datasetFile">Load a results CSV to explore data</small></div></div>
+            <button class="text-button" id="uploadTrigger">Load results CSV <span>↗</span></button>
+            <input type="file" id="csvInput" accept=".csv,text/csv" hidden />
+          </article>
+        </section>
+
+        <section class="analysis-section section-wrap" id="measurements">
+          <div class="section-heading">
+            <div><div class="eyebrow"><span class="eyebrow-line"></span> MEASUREMENT SPACE <span class="eyebrow-index">02 / 03</span></div><h2>Structure, <em>at a glance.</em></h2></div>
+            <div class="section-heading-note">Each point represents one galaxy’s CAS measurement<br />in the selected photometric band.</div>
+          </div>
+          <div class="analysis-grid">
+            <article class="panel scatter-panel">
+              <div class="panel-header">
+                <div><h3>Concentration vs. asymmetry</h3><p>CAS parameter distribution</p></div>
+                <div class="chart-actions"><label class="select-wrap"><span class="sr-only">Select photometric band</span><select id="bandSelect" aria-label="Select photometric band"><option value="all">All bands</option><option value="u">u band</option><option value="g">g band</option><option value="r">r band</option><option value="i">i band</option><option value="z">z band</option><option value="y">y band</option></select></label><button class="icon-button" id="downloadButton" title="Download visible data as CSV" aria-label="Download visible data as CSV">↓</button></div>
+              </div>
+              <div class="chart-legend"><span><i class="legend-dot"></i> Candidate galaxies</span><span class="legend-guide"><i></i> Higher asymmetry</span></div>
+              <div class="chart-wrap" id="chartWrap"><canvas id="scatterChart" aria-label="Scatter plot showing galaxy concentration and asymmetry"></canvas><div class="chart-tooltip" id="chartTooltip"></div></div>
+              <div class="chart-axis-foot"><span>LOWER CONCENTRATION <i>→</i> HIGHER CONCENTRATION</span><span id="chartCount">103 OBJECTS</span></div>
+            </article>
+            <aside class="panel distribution-panel">
+              <div class="panel-header"><div><h3>Band profile</h3><p>Median CAS values by band</p></div><span class="panel-kicker">u → y</span></div>
+              <div class="profile-chart" id="profileChart" aria-label="Median concentration by photometric band"></div>
+              <div class="profile-legend"><span><i class="profile-dot c-dot"></i> Concentration</span><span><i class="profile-dot a-dot"></i> Asymmetry</span><span><i class="profile-dot s-dot"></i> Smoothness</span></div>
+              <div class="profile-note"><span class="note-icon">i</span><span>Values are normalized within each metric to show the band-to-band pattern.</span></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="results-section section-wrap">
+          <div class="results-heading">
+            <div><div class="eyebrow"><span class="eyebrow-line"></span> OBJECT CATALOG</div><h2>Explore the <em>measurements.</em></h2></div>
+            <div class="table-tools"><label class="search-box"><span class="search-icon">⌕</span><input type="search" id="searchInput" placeholder="Find object ID" aria-label="Find object ID" /></label><button class="button-secondary" id="tableDownload">Export CSV <span>↓</span></button></div>
+          </div>
+          <div class="table-card">
+            <div class="table-scroll"><table><thead><tr><th><button data-sort="index" class="sort-button"># <span>↕</span></button></th><th><button data-sort="objectId" class="sort-button">OBJECT ID <span>↕</span></button></th><th><button data-sort="band" class="sort-button">BAND <span>↕</span></button></th><th><button data-sort="C" class="sort-button">CONCENTRATION <span>↕</span></button></th><th><button data-sort="A" class="sort-button">ASYMMETRY <span>↕</span></button></th><th><button data-sort="S" class="sort-button">SMOOTHNESS <span>↕</span></button></th><th class="table-bar-heading">CAS PROFILE</th></tr></thead><tbody id="resultsBody"></tbody></table></div>
+            <div class="table-empty" id="tableEmpty" hidden>No matching measurements. Try a different object ID or band.</div>
+            <div class="table-footer"><span id="tableRange">Showing 1–8 of 618 measurements</span><div class="pagination"><button id="prevPage" aria-label="Previous page">←</button><span id="pageIndicator">01 / 78</span><button id="nextPage" aria-label="Next page">→</button></div></div>
+          </div>
+          <p class="preview-note" id="previewNote"><span>◌</span> Preview values are illustrative and generated for interface demonstration. Load a <code>cas_results_*.csv</code> file to view analysis output.</p>
+        </section>
+
+        <section class="method-section section-wrap" id="method">
+          <div class="method-intro"><div class="eyebrow"><span class="eyebrow-line"></span> HOW IT WORKS <span class="eyebrow-index">03 / 03</span></div><h2>A scalable path<br />from <em>catalog to cosmos.</em></h2><p>The pipeline applies the Concentration, Asymmetry, and Smoothness framework across Rubin’s six optical bands. This preliminary implementation uses catalog-level flux measurements.</p><a href="#methodDetails" class="method-link">Read the methodology <span>↗</span></a></div>
+          <div class="pipeline">
+            <div class="pipeline-line"></div>
+            <article class="pipeline-step"><span class="step-number">01</span><span class="step-icon catalog-icon">▤</span><h3>Catalog query</h3><p>Retrieve object properties from the DP0.2 TAP service.</p><span class="step-foot">~100,000 OBJECTS</span></article>
+            <article class="pipeline-step"><span class="step-number">02</span><span class="step-icon filter-icon">⌁</span><h3>Candidate selection</h3><p>Apply u magnitude and color cuts to isolate Green Valley candidates.</p><span class="step-foot">103 CANDIDATES</span></article>
+            <article class="pipeline-step"><span class="step-number">03</span><span class="step-icon band-icon">◉</span><h3>Multi-band CAS</h3><p>Estimate C, A, and S independently in each photometric band.</p><span class="step-foot">u · g · r · i · z · y</span></article>
+            <article class="pipeline-step"><span class="step-number">04</span><span class="step-icon output-icon">↗</span><h3>Results export</h3><p>Save measurement rows to a timestamped CSV for further analysis.</p><span class="step-foot">CSV OUTPUT</span></article>
+          </div>
+        </section>
+
+        <section class="method-details section-wrap" id="methodDetails">
+          <div class="details-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> METHODS & CONTEXT</div><h2>Three measures. <em>One evolving story.</em></h2></div><span class="formula-note">CONSELICE (2003) FRAMEWORK</span></div>
+          <div class="method-cards">
+            <article class="method-card"><div class="method-card-head"><span class="cas-letter c-letter">C</span><span class="method-word">CONCENTRATION</span><span class="method-number">01</span></div><div class="formula">5 log<sub>10</sub> <span class="fraction"><span>r<sub>80</sub></span><span>r<sub>20</sub></span></span></div><p>How centrally concentrated a galaxy’s light is. Higher values indicate a stronger central light profile.</p></article>
+            <article class="method-card"><div class="method-card-head"><span class="cas-letter a-letter">A</span><span class="method-word">ASYMMETRY</span><span class="method-number">02</span></div><div class="formula">Σ |I − I<sub>180</sub>| <span class="formula-denom">/ Σ |I|</span></div><p>How much the light distribution differs after a 180° rotation. Larger values may signal disturbance.</p></article>
+            <article class="method-card"><div class="method-card-head"><span class="cas-letter s-letter">S</span><span class="method-word">SMOOTHNESS</span><span class="method-number">03</span></div><div class="formula">Σ |I − I<sub>S</sub>| <span class="formula-denom">/ Σ |I|</span></div><p>Small-scale structure, measured by comparing the flux with a smoothed version of itself.</p></article>
+          </div>
+          <div class="limitation-note"><span class="limitation-icon">!</span><div><strong>Preliminary catalog-level analysis</strong><p>The current pipeline approximates galaxy radii from shape moments, uses a one-dimensional flux reversal for asymmetry, and does not explicitly subtract background. These measurements are a foundation for future image-based validation, not a final morphological classification.</p></div><a href="https://doi.org/10.1086/376865" target="_blank" rel="noreferrer">Conselice, 2003 ↗</a></div>
+        </section>
+      </main>
+
+      <footer class="footer section-wrap"><a class="brand footer-brand" href="#overview"><span class="brand-mark" aria-hidden="true"><span></span><i></i></span><span class="brand-name">CAS <span>/</span> E+A</span></a><span>Department of Physics & Astronomy · College of Staten Island, CUNY</span><span>LSST DP0.2 <i>·</i> Research in progress</span></footer>
+    </div>
+    <div class="drop-overlay" id="dropOverlay"><div class="drop-card"><span class="drop-icon">↑</span><strong>Drop your CAS results CSV</strong><span>Expected columns: objectId, band, C, A, S</span></div></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
