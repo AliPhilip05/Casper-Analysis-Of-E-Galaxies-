@@ -6,7 +6,9 @@ from datetime import datetime
 from pathlib import Path
 import os
 
-with open("data.input/FINAL LIST.csv", 'r') as file:
+backend_dir = Path(__file__).resolve().parents[1]
+input_path = backend_dir / "data" / "input" / "selected_galaxies_dp1.csv"
+with open(input_path, "r") as file:
     content = file.read() #Opens the file and reads it (FR FR brodello) 
 
 
@@ -120,21 +122,23 @@ for band, flux_key in band_flux_keys.items():# builds array of all galaxies
             'S':        round(float(S), 4),
         })
 
-script_folder = Path(__file__).parent #gets folder and saves the csv in it (From API PULL project)
+results_folder = Path(__file__).resolve().parents[1] / "data" / "results"
+results_folder.mkdir(parents=True, exist_ok=True)
 
 dataFrame = pd.DataFrame(all_data)
 
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") #unique name for each saved file depending on computers time and date
 file_name = f"cas_results_{timestamp}.csv" # Easy for more files and data sets and because I wanted it
-csv_path  = script_folder / file_name
+csv_path = results_folder / file_name
 
 dataFrame.to_csv(csv_path, index=False) #saves data to CSV
 
-latest_file_path = script_folder / "latest_file.txt" #This is cool it tells you what the most recent file is
+latest_file_path = results_folder / "latest_file.txt" #This is cool it tells you what the most recent file is
 with open(latest_file_path, "w") as f:
     f.write(file_name)
 
-os.startfile(csv_path)
+if hasattr(os, "startfile"):
+    os.startfile(csv_path)
 
 print("Saved to", csv_path) # Shows where it is
 

@@ -1,445 +1,281 @@
-Multi-Light-Band CAS Analysis of E+A Galaxies
-Concentration, Asymmetry, and Smoothness Analysis Using Data from the Vera C. Rubin Observatory's Legacy Survey of Space and Time (LSST)
-Isabella Troy Brazoban, Lorik Fazliu, and Ali Philip
-Advisor: Dr. Charles Liu
-The City University of New York — College of Staten Island
-Department of Physics and Astronomy
+# Multi-band CAS Analysis of E+A Galaxy Candidates
+
+**Concentration, Asymmetry, and Smoothness (CAS) analysis using data from the Vera C. Rubin Observatory’s Legacy Survey of Space and Time (LSST)**
+
+**Research authors:** Isabella Troy Brazoban, Lorik Fazliu, and Ali Philip
+
+**Advisor:** Dr. Charles Liu
+
+Department of Physics and Astronomy, The City University of New York — College of Staten Island
+
 2800 Victory Blvd, Staten Island, NY 10314
 
-Overview
-This project develops an automated pipeline for analyzing the morphology of post-starburst (E+A) galaxies using data from the Vera C. Rubin Observatory's Legacy Survey of Space and Time (LSST).
-Galaxy morphology provides important information about how galaxies form and evolve. In particular, disturbed morphologies can provide evidence of galaxy mergers and interactions. The Concentration, Asymmetry, and Smoothness (CAS) framework, introduced by Conselice (2003), provides a quantitative method for characterizing these morphological features.
+> **Project status:** Ongoing preliminary research. The current measurements and methods are prototypes and require further validation.
 
-The goal of this project is to adapt the CAS framework to the scale of LSST data and create a computationally efficient workflow capable of processing large galaxy samples across multiple photometric bands.
+## Overview
 
-The pipeline currently analyzes six optical and near-infrared bands:
+This project develops an automated workflow for studying the morphology of candidate post-starburst (E+A) galaxies. It applies the Concentration, Asymmetry, and Smoothness (CAS) framework across six LSST photometric bands: **u, g, r, i, z, and y**.
 
-u
-g
-r
-i
-z
-y
-The resulting CAS measurements can be used to investigate the structural properties of E+A galaxies and, ultimately, help identify possible merger remnants.
-Scientific Motivation
-The Vera C. Rubin Observatory's LSST will produce approximately 20 terabytes of raw astronomical data per night, creating both an unprecedented scientific opportunity and a computational challenge.
-Traditional approaches to galaxy morphology often rely on manually examining individual galaxies or processing relatively small datasets. Such approaches do not scale efficiently to LSST-sized surveys.
+Galaxy structure can preserve evidence of formation and evolution. In particular, disturbed morphologies may indicate mergers or interactions. The project’s longer-term goal is to use multi-band CAS measurements to investigate the structural properties of E+A candidates and identify possible merger remnants at survey scale.
 
-This project therefore focuses on:
+The workflow is designed to:
 
-Selecting candidate E+A galaxies from survey catalog data.
-Reducing the relevant data to a manageable local dataset.
-Calculating CAS parameters automatically.
-Performing the analysis across multiple photometric bands.
-Saving the resulting measurements in a format suitable for further analysis.
-The broader scientific objective is to use these measurements to study the relationship between galaxy structure, stellar populations, mergers, and galactic evolution.
-E+A Galaxy Selection
-The initial catalog query retrieves up to 100,000 objects from the LSST Data Preview 0.2 (DP0.2) object catalog.
-Candidate galaxies are then selected using photometric criteria designed to isolate the transition region between star-forming and quiescent galaxies, commonly referred to as the Green Valley.
+1. Retrieve object measurements from Rubin survey catalogs.
+2. Select a manageable Green Valley candidate sample using photometric cuts.
+3. Calculate CAS values across the six bands.
+4. Save the measurements in a CSV format for further analysis.
 
-The selection criteria include:
+## Candidate selection
 
-u-band Magnitude
-15.0
-≤
-u
-≤
-21.0
+The initial catalog query can retrieve up to approximately 100,000 objects from the LSST Data Preview 0.2 (DP0.2) object catalog. Photometric cuts are then used to select Green Valley candidates:
 
-u − g Color
-1.0
-≤
-u
-−
-g
-≤
-1.8
+| Measurement | Selection range |
+| --- | ---: |
+| u-band magnitude | 15.0 ≤ u ≤ 21.0 |
+| u − g color | 1.0 ≤ u − g ≤ 1.8 |
+| g − r color | 0.3 ≤ g − r ≤ 0.85 |
 
-g − r Color
-0.3
-≤
-g
-−
-r
-≤
-0.85
+Applying these cuts produced an initial sample of 103 candidates. These photometric criteria identify Green Valley objects; they do **not**, by themselves, confirm a spectroscopic E+A classification.
 
-Applying these filters reduced the initial sample of approximately 100,000 objects to 103 target galaxies.
+## Data source
 
-Data Source
-The project uses catalog data accessed through the Rubin Science Platform (RSP) and its Table Access Protocol (TAP) service.
-The analysis uses measurements including:
+Catalog measurements are accessed through the Rubin Science Platform (RSP) Table Access Protocol (TAP) service. The primary catalog used by the current query workflow is `dp02_dc2_catalogs.Object`.
 
-Object IDs
-Right ascension and declination
-cModel fluxes in the six LSST bands
-Shape moments
-Galaxy size measurements
-The primary catalog queried by the current implementation is:
-dp02_dc2_catalogs.Object
+Measurements used by the analysis include object IDs, coordinates, cModel fluxes in the six bands, shape moments, and galaxy-size estimates. The project also queries `TAP_SCHEMA.columns` to inspect available columns and descriptions.
 
-An example TAP query is:
+Example TAP query:
+
+```sql
 SELECT TOP 10000
     objectId,
     coord_ra,
     coord_dec,
-
     g_cModelFlux,
     r_cModelFlux,
     i_cModelFlux,
-
     g_kronRad,
     r_kronRad,
     i_kronRad,
-
     shape_xx,
     shape_xy,
     shape_yy,
-
     refExtendedness
-
 FROM dp02_dc2_catalogs.Object
 WHERE detect_isPrimary = 1
+```
 
-The project also queries TAP_SCHEMA.columns to inspect the available catalog columns and their descriptions.
-CAS Analysis
-The pipeline calculates three morphological parameters:
-Concentration (C)
-Asymmetry (A)
-Smoothness (S)
-These parameters are calculated independently for each galaxy and each photometric band.
-The final dataset therefore contains CAS measurements across the:
+The query is an example of catalog retrieval; the photometric selection is applied as a later workflow step.
 
-u
-,
- 
-g
-,
- 
-r
-,
- 
-i
-,
- 
-z
-,
- 
-y
+## CAS measurements
 
-bands.
+The pipeline calculates three quantities independently for each galaxy and photometric band.
 
-Concentration
-Concentration describes how centrally concentrated the galaxy's light is.
-The implementation uses the ratio between the radii containing 80% and 20% of the estimated flux:
+| Parameter | Meaning | General interpretation |
+| --- | --- | --- |
+| **C — Concentration** | Central concentration of the galaxy’s light | Higher values indicate a more centrally concentrated light profile. |
+| **A — Asymmetry** | Difference between a flux distribution and its 180°-rotated counterpart | Higher values can indicate a disturbed or irregular morphology. |
+| **S — Smoothness** | Difference between the flux distribution and a smoothed version | Higher values indicate more small-scale structure or clumpiness. |
 
-C
-=
-5
-log
-⁡
-10
-(
-r
-80
-r
-20
-)
+### Concentration
 
-where:
+Concentration is estimated from the radii containing 80% and 20% of the flux:
 
-$r_{80}$ is the estimated radius containing 80% of the light.
-$r_{20}$ is the estimated radius containing 20% of the light.
-Higher concentration values indicate that the galaxy's light is more strongly concentrated toward its center.
-The code protects against division by zero by assigning a value of 0.0 when:
+$$C = 5\log_{10}\left(\frac{r_{80}}{r_{20}}\right)$$
 
-r
-20
-=
-0
+Here, `r80` and `r20` are approximate radii in the current implementation. A zero `r20` is guarded against to avoid division by zero.
 
-Asymmetry
-Asymmetry measures how different a galaxy is from itself after a 180-degree rotation.
-Conceptually, the original flux distribution is compared with its rotated counterpart:
+### Asymmetry
 
-A
-=
-∑
-∣
-I
-−
-I
-180
-∣
-∑
-∣
-I
-∣
-−
-A
-b
-k
-g
+The conceptual CAS definition compares the original flux distribution, `I`, with its 180°-rotated version, `I₁₈₀`, and subtracts a background correction:
 
-where:
+$$A = \frac{\sum |I-I_{180}|}{\sum |I|} - A_{\mathrm{bkg}}$$
 
-$I$ is the original flux distribution.
-$I_{180}$ is the flux distribution rotated by 180 degrees.
-$A_{\mathrm{bkg}}$ is the background correction.
-A larger asymmetry value generally indicates a more disturbed or irregular morphology, which can be associated with interactions or mergers.
-The current implementation uses an array-reversal approach as an approximation to the 180-degree comparison.
+The current prototype approximates the rotation by reversing a one-dimensional flux array (`flux_array[::-1]`). It does not explicitly estimate or subtract a separate background term.
 
-Smoothness
-Smoothness measures small-scale structural variation within the galaxy.
-The original flux distribution is compared with a smoothed version produced using a uniform filter:
+### Smoothness
 
-S
-=
-∑
-∣
-I
-−
-I
-S
-∣
-∑
-∣
-I
-∣
-−
-S
-b
-k
-g
+Smoothness compares the original flux distribution with a smoothed version, `Iₛ`:
 
-where $I_S$ represents the smoothed flux distribution.
+$$S = \frac{\sum |I-I_S|}{\sum |I|} - S_{\mathrm{bkg}}$$
 
-The smoothing scale is dynamically determined from the estimated Petrosian/galaxy radius:
+The filter scale is based on the estimated `r80` value, with a minimum size of 3 and an odd size:
 
-filterSize = max(3, int(round(0.3 * rPetea)))
+```text
+filter_size = max(3, round(0.3 * r80))
+if filter_size % 2 == 0:
+    filter_size += 1
+```
 
-The filter size is also forced to be odd:
-if filterSize % 2 == 0:
-    filterSize += 1
+The filter size is at least 3 and is made odd. In the current prototype, the uniform filter is applied to the one-dimensional flux array rather than to a two-dimensional image.
 
-This prevents invalid filter sizes and ensures that even very small objects can be processed.
-Higher smoothness values indicate greater small-scale structure or clumpiness.
+### Approximate radius estimation
 
-Galaxy Size Estimation
-The pipeline estimates a characteristic galaxy radius using the second-order shape moments:
-r_total = np.sqrt(np.abs(shape_xx + shape_yy))
+The prototype estimates a characteristic radius from the trace of the shape-moment tensor. The following is pseudocode describing the approximation, not a runnable Python script:
 
-The trace of the shape-moment tensor is used as an approximation of the spatial extent of the galaxy.
-The normalized flux is then used to estimate $r_{80}$ and $r_{20}$:
-
+```text
+r_total = sqrt(abs(shape_xx + shape_yy))
 flux_norm = (flux - min_flux) / flux_range
-
-The current implementation uses:
 r_80 = r_total * (0.5 + 0.5 * flux_norm)
 r_20 = r_total * (0.1 + 0.3 * flux_norm)
+```
 
-Small positive lower bounds are applied to the radii to prevent division-by-zero errors.
-Note: These radius relationships are part of the current preliminary implementation and are intended as an approximation for the automated pipeline. A future version should validate the estimated radii against direct curve-of-growth or Petrosian-radius measurements.
-Pipeline Workflow
-The overall workflow is:
-LSST / DP0.2 Catalog
-        │
-        ▼
-    TAP Query
-        │
-        ▼
-Initial Galaxy Sample
-        │
-        ▼
-Photometric Selection
-    (u, u-g, g-r)
-        │
-        ▼
-E+A / Green Valley Candidates
-        │
-        ▼
-Extract Flux + Shape Data
-        │
-        ▼
-Process u, g, r, i, z, y Bands
-        │
-        ├──► Estimate r80 and r20
-        │
-        ├──► Calculate Concentration
-        │
-        ├──► Calculate Asymmetry
-        │
-        └──► Calculate Smoothness
-        │
-        ▼
-    CAS Results
-        │
-        ▼
-    CSV Output
+Small positive lower bounds are applied to avoid division-by-zero errors. These relationships are preliminary approximations; future work should validate radii against direct curve-of-growth or Petrosian-radius measurements.
 
-Requirements
-The pipeline requires Python and the following packages:
-numpy
-pandas
-scipy
-matplotlib
-lsst.rsp
-lsst.daf.butler
-lsst.geom
-lsst.afw.display
+## Workflow
 
-The LSST-specific packages are expected to be available within an appropriate Rubin Science Platform / LSST Science Pipelines environment.
-Installation
-Clone the repository:
-git clone <repository-url>
-cd CAS-EA-Galaxy-Analysis
+```text
+Rubin DP0.2 catalog
+        ↓
+TAP query and initial sample
+        ↓
+Photometric selection (u, u − g, g − r)
+        ↓
+Green Valley candidates
+        ↓
+Extract flux and shape measurements
+        ↓
+Process u, g, r, i, z, and y bands
+        ├── Estimate r80 and r20
+        ├── Calculate concentration (C)
+        ├── Calculate asymmetry (A)
+        └── Calculate smoothness (S)
+        ↓
+CAS results CSV
+```
 
-Install the standard Python dependencies if they are not already available:
-pip install numpy pandas scipy matplotlib
+## Repository and implementation status
 
-LSST/Rubin-specific packages should be installed and configured through the appropriate Rubin Science Platform environment rather than a standard pip installation.
-Input Data
-The CAS processing script expects the selected galaxy sample to be stored as:
-data.input/FINAL LIST.csv
+The repository is organized into three top-level areas: `frontend/` contains the static dashboard, `backend/` contains the Rust and Python analysis/query code plus its data, and `documents/` contains reports and technical notes. This repository also has a Rust 2021 Cargo project and an earlier Rubin Science Platform query workflow.
 
-The CSV file should contain the following fields:
+The current working tree is still being integrated: `backend/src/main.rs` does not yet invoke the CSV reader and CAS processing routine. The Rust workflow is therefore not yet a runnable, one-command pipeline. The earlier Python/RSP workflow is a separate prototype and requires the appropriate Rubin Science Platform environment.
+
+Notes in `documents/technical/` include material from earlier iterations. Use this README for the current folder layout and input/output paths.
+
+```text
+frontend/                 Static dashboard
+backend/                  Rust crate and query scripts
+  src/                    Rust source
+  query/                  Python/RSP query and analysis prototypes
+  data/input/             Selected-galaxy input CSV
+  data/results/           Generated CAS results and latest-file pointer
+documents/                Research papers, reports, and technical notes
+README.md                 Project overview and usage notes
+```
+
+### Rust dependencies
+
+The Cargo project is in `backend/` and currently declares:
+
+- Rust 2021 edition
+- `csv` for CSV input and output
+- `chrono` for timestamped output filenames
+
+### Input CSV
+
+The current Rust reader expects these columns:
+
+```text
 objectId
+u_cModelFlux
 g_cModelFlux
 r_cModelFlux
 i_cModelFlux
 z_cModelFlux
 y_cModelFlux
-u_cModelFlux
 shape_xx
 shape_yy
+```
 
-The script reads these values and converts the numerical fields to floating-point values before performing the CAS calculations.
-Rows containing invalid numerical values are skipped.
+Rows with values that cannot be parsed as numbers are skipped. The input file is `backend/data/input/selected_galaxies_dp1.csv`. The Rust reader resolves it relative to the backend project directory.
 
-Running the Analysis
-Run the CAS analysis script from the project environment:
-python cas_analysis.py
+### Results CSV
 
-The script processes each galaxy across all six bands:
-u
-g
-r
-i
-z
-y
-For each galaxy/band combination, the following quantities are calculated:
-C — Concentration
-A — Asymmetry
-S — Smoothness
-Output
-The results are saved automatically as a timestamped CSV file:
+The analysis writes one row for each galaxy and band under `backend/data/results/`. The output filename follows this pattern:
+
+```text
 cas_results_YYYYMMDD_HHMMSS.csv
+```
 
-For example:
-cas_results_20260913_160700.csv
+The columns are:
 
-The output contains:
-Column	Description
-index	Index of the galaxy in the input sample
-objectId	LSST catalog object identifier
-band	Photometric band
-C	Concentration
-A	Asymmetry
-S	Smoothness
+| Column | Description |
+| --- | --- |
+| `index` | Position of the galaxy in the input sample |
+| `objectId` | LSST catalog object identifier |
+| `band` | Photometric band (`u`, `g`, `r`, `i`, `z`, or `y`) |
+| `C` | Concentration |
+| `A` | Asymmetry |
+| `S` | Smoothness |
 
-Example Output
+Schema example (illustrative values):
+
+```csv
 index,objectId,band,C,A,S
-1,123456789,g,3.2145,0.0872,0.1421
+1,123456789,u,3.2145,0.0872,0.1421
 2,987654321,g,2.9183,0.1134,0.2017
 3,456789123,r,3.4521,0.0721,0.1288
+```
 
-The name of the most recently generated file is also stored in:
-latest_file.txt
+The latest output filename is also written to `backend/data/results/latest_file.txt`.
 
-Important Implementation Notes
-Background Corrections
-The theoretical CAS definitions include background corrections:
-A
-b
-k
-g
+## Frontend
 
-and
+The frontend is a static HTML/CSS/JavaScript page in `frontend/` with no build step. It presents the project workflow, CAS definitions, an interactive measurement view, and a results table. It starts with clearly labeled illustrative preview values; load a results CSV to inspect real output. The browser reads the selected CSV locally and does not upload it to a server.
 
-S
-b
-k
-g
+From the repository root, serve the static files with:
 
-The current production loop calculates the asymmetry and smoothness values directly from the galaxy flux arrays without explicitly subtracting separately estimated background values.
+```bash
+python3 -m http.server 8000
+```
 
-Future versions should incorporate robust background estimates from blank-sky regions or dedicated background measurements.
+Then open <http://localhost:8000/frontend/>. The dashboard accepts a results CSV with `objectId`, `band`, `C`, `A`, and `S` columns; the `index` column is optional. It supports band filtering, object-ID search, sorting, pagination, and CSV export.
 
-180-Degree Rotation
-The current implementation approximates the 180-degree comparison using:
-flux_180 = flux_array[::-1]
+## Limitations
 
-This reverses the order of the one-dimensional catalog flux array.
-For a true image-based CAS analysis, the 180-degree transformation should instead be performed on the two-dimensional galaxy image around the galaxy's center.
+The current work is a preliminary research prototype. In particular:
 
-Smoothness
-The current implementation applies the uniform filter to the full flux array:
-I_S = ndimage.uniform_filter(flux_array, size=filterSize)
+- CAS calculations use catalog-level flux measurements rather than full two-dimensional galaxy images.
+- The `r80` and `r20` relationships are approximate.
+- Asymmetry uses a one-dimensional array reversal rather than rotating an image around the galaxy center.
+- Smoothness is calculated on a one-dimensional flux array rather than a two-dimensional image.
+- The current calculation loop does not explicitly subtract separately estimated background values for asymmetry or smoothness.
+- Green Valley color cuts are not a definitive spectroscopic E+A classification.
+- The initial sample of 103 candidates is small relative to the eventual scale of LSST.
+- Measurements need validation against established CAS implementations and confirmed or simulated merger samples.
 
-A future image-based implementation should smooth the 2D pixel-level galaxy image, rather than a one-dimensional array of catalog fluxes.
-These distinctions are important when comparing the current preliminary pipeline to the original Conselice CAS methodology.
+These differences matter when comparing this prototype with the original image-based CAS methodology.
 
-Current Limitations
-This project is an ongoing preliminary research effort. Several components of the pipeline are currently approximations designed to establish an automated and scalable framework.
-Important limitations include:
+## Future work
 
-The current CAS calculations operate primarily on catalog-level flux measurements rather than full 2D galaxy images.
-The $r_{80}$ and $r_{20}$ relationships are approximate.
-The 180-degree asymmetry calculation should ultimately use 2D image rotation.
-Background corrections require further development.
-The sample-selection criteria identify a Green Valley population and are not, by themselves, a definitive spectroscopic classification of E+A galaxies.
-The current sample is relatively small compared with the eventual scale of LSST.
-CAS measurements require further validation against established implementations and simulated or observationally confirmed merger samples.
-Future Work
-The next stages of the project will focus on improving both the scientific accuracy and computational scalability of the pipeline.
-Potential improvements include:
+Planned improvements include:
 
-Implementing true 2D image-based CAS measurements.
-Calculating Petrosian radii directly from galaxy images.
-Improving background estimation and subtraction.
-Validating CAS measurements against the original Conselice methodology.
-Comparing CAS measurements between the six LSST bands.
-Expanding the galaxy sample beyond the initial 103 candidates.
-Automating the identification of merger remnants.
-Investigating relationships between morphology, stellar mass, age, and galaxy evolution.
-Optimizing the pipeline for significantly larger LSST datasets.
-Developing visualization tools for CAS parameter distributions.
-Comparing automated classifications with visually classified galaxies.
-Scientific Goal
-The ultimate goal is to establish a scalable framework for studying the morphology of post-starburst galaxies using LSST data.
-By measuring Concentration, Asymmetry, and Smoothness across multiple wavelengths, the project aims to investigate whether structural signatures can reveal the remnants of galaxy mergers and interactions.
+- Implement true two-dimensional image-based CAS measurements and image rotation.
+- Estimate Petrosian radii directly from galaxy images.
+- Improve background estimation and subtraction.
+- Validate measurements against the original Conselice methodology.
+- Compare CAS measurements across all six LSST bands.
+- Expand the candidate sample and optimize processing for larger datasets.
+- Compare automated classifications with visually classified galaxies.
+- Study links between morphology, stellar mass, stellar age, mergers, and galaxy evolution.
 
-Understanding these morphological signatures may help answer broader questions about:
+## Scientific goal
 
-How galaxy mergers trigger or terminate star formation.
-How post-starburst galaxies evolve.
-How stellar mass and age relate to galaxy morphology.
-How merger remnants appear across different wavelengths.
-How frequently mergers contribute to galaxy evolution.
-The development of an automated CAS pipeline provides a foundation for extending these analyses to the much larger datasets expected from the Rubin Observatory's LSST.
-References
-Conselice, C. J. (2003). The Relationship between Stellar Light Distributions of Galaxies and Their Formation Histories. The Astrophysical Journal Supplement Series, 147, 1–28.
-Vera C. Rubin Observatory. Legacy Survey of Space and Time (LSST).
-Rubin Observatory. Rubin Science Platform / Data Preview 0.2 (DP0.2).
-Authors
-Isabella Troy Brazoban
-Lorik Fazliu
-Ali Philip
-Advisor: Dr. Charles Liu
+By measuring concentration, asymmetry, and smoothness across multiple wavelengths, this project aims to investigate whether structural signatures can reveal merger remnants among post-starburst galaxy candidates. The broader questions include how mergers affect star formation, how post-starburst galaxies evolve, and how merger remnants appear across different wavelengths.
 
-Department of Physics and Astronomy
-The City University of New York — College of Staten Island
+## References
 
-Status
-Project Status: Ongoing / Preliminary Research
-This repository contains an evolving research pipeline. Methods and implementations may change as the CAS analysis is validated and expanded to larger LSST datasets.
+- Conselice, C. J. (2003). “The Relationship between Stellar Light Distributions of Galaxies and Their Formation Histories.” *The Astrophysical Journal Supplement Series*, 147, 1–28.
+- Vera C. Rubin Observatory. *Legacy Survey of Space and Time (LSST).*
+- Rubin Science Platform. *Data Preview 0.2 (DP0.2).*
+
+## Contributions
+
+- **Research concept, scientific content, and original project description:** Isabella Troy Brazoban, Lorik Fazliu, and Ali Philip.
+- **Research advisor:** Dr. Charles Liu.
+- **Frontend prompt clarification and frontend implementation:** OpenAI Codex, based on the human-authored project README and scientific description. Codex is credited for frontend assistance, not for the research, scientific results, or interpretation.
+
+### Clarified frontend prompt
+
+> Using the human-authored README and project description as the source of truth, create a responsive, accessible frontend for this repository’s multi-band CAS analysis of Green Valley/E+A galaxy candidates. Explain the scientific goal, candidate-selection criteria, workflow, CAS measurements, and current limitations. Provide an interactive view of results across the `u`, `g`, `r`, `i`, `z`, and `y` bands, with a table that can load and export CAS results CSV files. Clearly label any illustrative values and distinguish them from uploaded analysis results. Preserve the project’s preliminary status: explain the approximate radii, one-dimensional asymmetry and smoothness operations, missing explicit background subtraction, and the fact that photometric selection is not spectroscopic E+A confirmation. Do not invent scientific findings or present sample values as observations. Credit the human authors for the research and scientific content, and credit OpenAI Codex for clarifying this frontend prompt and assisting with frontend implementation.
+
+The prompt was clarified by OpenAI Codex from the human-written README; the frontend implementation is credited separately from the scientific work.
