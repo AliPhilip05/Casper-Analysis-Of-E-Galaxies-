@@ -286,6 +286,23 @@ Planned improvements include:
 
 By measuring concentration, asymmetry, and smoothness across multiple wavelengths, this project aims to investigate whether structural signatures can reveal merger remnants among post-starburst galaxy candidates. The broader questions include how mergers affect star formation, how post-starburst galaxies evolve, and how merger remnants appear across different wavelengths.
 
+## Open-source dependencies and licenses
+
+The analysis code uses third-party software under the licenses below. The Rust dependencies are declared in [`backend/Cargo.toml`](backend/Cargo.toml); the older Python/Rubin prototype imports its libraries in [`backend/query/`](backend/query/). These libraries are dependencies, not copies of their source code included in this repository. Follow each project's linked license when installing, modifying, or redistributing it.
+
+| Software used | License published by its project |
+| --- | --- |
+| Rust [`csv`](https://github.com/BurntSushi/rust-csv) | [MIT or Unlicense](https://github.com/BurntSushi/rust-csv#license) |
+| Rust [`chrono`](https://github.com/chronotope/chrono) | [MIT or Apache-2.0](https://github.com/chronotope/chrono#license) |
+| Python [`numpy`](https://github.com/numpy/numpy) | [BSD-3-Clause for the main NumPy project](https://github.com/numpy/numpy/blob/main/LICENSE.txt) |
+| Python [`scipy`](https://github.com/scipy/scipy) | [BSD-3-Clause](https://github.com/scipy/scipy/blob/main/LICENSE.txt) |
+| Python [`pandas`](https://github.com/pandas-dev/pandas) | [BSD-3-Clause](https://github.com/pandas-dev/pandas/blob/main/LICENSE) |
+| Python [`matplotlib`](https://github.com/matplotlib/matplotlib) | [Matplotlib License](https://github.com/matplotlib/matplotlib/blob/main/LICENSE/LICENSE) |
+| LSST Science Pipelines modules used by the Python prototype | [GNU GPL v3](https://pipelines.lsst.io/) |
+| Website fonts: DM Sans, DM Mono, and Manrope | SIL Open Font License 1.1 ([DM Sans](https://github.com/google/fonts/blob/main/ofl/dmsans/OFL.txt), [DM Mono](https://github.com/google/fonts/blob/main/ofl/dmmono/OFL.txt), [Manrope](https://github.com/google/fonts/blob/main/ofl/manrope/OFL.txt)) |
+
+The linked license files and the license notices in installed distributions are the authoritative terms. This list describes dependencies; it does not set a license for the research text, data, or original code in this repository.
+
 ## References
 
 - Conselice, C. J. (2003). “The Relationship between Stellar Light Distributions of Galaxies and Their Formation Histories.” *The Astrophysical Journal Supplement Series*, 147, 1–28.
