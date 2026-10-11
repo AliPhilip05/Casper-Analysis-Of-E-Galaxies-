@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
     paths:
-      - "frontend/aphlip.org/**"
       - "frontend/index.html"
       - "frontend/styles.css"
       - "frontend/app.js"
@@ -37,11 +36,24 @@ jobs:
         run: |
           mkdir -p _site/portfolio _site/casper
           cp frontend/index.html frontend/styles.css frontend/app.js _site/
-          cp -R frontend/aphlip.org/. _site/portfolio/
-          rm -f _site/portfolio/README.md
           touch _site/.nojekyll
           python3 - <<'PYCODE'
           from pathlib import Path
+
+          # Preserve old portfolio URLs after moving the site to the account homepage.
+          for name in ("index.html", "research.html", "coursework.html"):
+              destination = "https://aliphilip05.github.io/" + ("" if name == "index.html" else name)
+              Path("_site/portfolio", name).write_text(
+                  '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+                  '<meta name="viewport" content="width=device-width, initial-scale=1">'
+                  f'<meta http-equiv="refresh" content="0; url={destination}">'
+                  f'<link rel="canonical" href="{destination}">'
+                  '<title>APhlip.org — Ali Philip</title>'
+                  '<script>location.replace(' + repr(destination) + ' + location.hash)</script>'
+                  '</head><body>'
+                  f'<p><a href="{destination}">Open Ali Philip’s portfolio</a></p>'
+                  '</body></html>\n'
+              )
 
           # Preserve old dashboard links while publishing it at the site root.
           Path("_site/casper/index.html").write_text(
