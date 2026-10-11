@@ -147,7 +147,7 @@ CAS results CSV
 
 The repository is organized into three top-level areas: `frontend/` contains the static dashboard, `backend/` contains the Rust and Python analysis/query code plus its data, and `documents/` contains reports and technical notes. This repository also has a Rust 2021 Cargo project and an earlier Rubin Science Platform query workflow.
 
-The current working tree is still being integrated: `backend/src/main.rs` does not yet invoke the CSV reader and CAS processing routine. The Rust workflow is therefore not yet a runnable, one-command pipeline. The earlier Python/RSP workflow is a separate prototype and requires the appropriate Rubin Science Platform environment.
+The Rust backend is organized as a reusable library with separate analysis, input/output, data model, and pipeline modules. Its command-line entry point can process either the bundled sample or a user-supplied catalog CSV. The earlier Python/RSP workflow is a separate prototype and requires the appropriate Rubin Science Platform environment.
 
 Notes in `documents/technical/` include material from earlier iterations. Use this README for the current folder layout and input/output paths.
 
@@ -186,11 +186,33 @@ shape_xx
 shape_yy
 ```
 
-Rows with values that cannot be parsed as numbers are skipped. The input file is `backend/data/input/selected_galaxies_dp1.csv`. The Rust reader resolves it relative to the backend project directory.
+The default input is `backend/data/input/selected_galaxies_dp1.csv`, resolved relative to the backend project directory. You can also pass any CSV file with these required columns to the executable. Rows with values that cannot be parsed as numbers are skipped.
+
+### Run the local Rust analysis
+
+From the repository root, run the bundled sample:
+
+```sh
+cargo run --manifest-path backend/Cargo.toml
+```
+
+To process your own catalog CSV and save a timestamped result beside it, replace the example path with the real path to your file. `/path/to/input.csv` is a placeholder and should not be copied literally:
+
+```sh
+cargo run --manifest-path backend/Cargo.toml -- "/absolute/path/to/your-file.csv"
+```
+
+The command-line path can be absolute or relative to the directory where you run the command. To choose the exact output filename, provide a second real path:
+
+```sh
+cargo run --manifest-path backend/Cargo.toml -- "/absolute/path/to/your-file.csv" "/absolute/path/to/cas_results.csv"
+```
+
+The input CSV must include `objectId`, `u_cModelFlux`, `g_cModelFlux`, `r_cModelFlux`, `i_cModelFlux`, `z_cModelFlux`, `y_cModelFlux`, `shape_xx`, and `shape_yy`. The generated results CSV can be loaded into the local dashboard using the instructions below.
 
 ### Results CSV
 
-The analysis writes one row for each galaxy and band under `backend/data/results/`. The output filename follows this pattern:
+Each run writes one row for each galaxy and band. With no command-line arguments, results go to `backend/data/results/`; a timestamped run with a supplied input CSV saves beside that input, and an explicit output argument selects the exact destination. Timestamped output filenames follow this pattern:
 
 ```text
 cas_results_YYYYMMDD_HHMMSS.csv
@@ -216,7 +238,7 @@ index,objectId,band,C,A,S
 3,456789123,r,3.4521,0.0721,0.1288
 ```
 
-The latest output filename is also written to `backend/data/results/latest_file.txt`.
+When the bundled sample is run with no arguments, the latest output filename is also written to `backend/data/results/latest_file.txt`. The local dashboard can load any generated results CSV.
 
 ## Frontend
 
