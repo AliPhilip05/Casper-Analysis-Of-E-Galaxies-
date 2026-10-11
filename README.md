@@ -1,6 +1,6 @@
 # Multi-band CAS Analysis of E+A Galaxy Candidates
 
-**Live website:** [Open the CAS / E+A dashboard](https://aliphilip05.github.io/Casper-Analysis-Of-E-Galaxies-/casper/)
+**Live website:** [Open the CAS / E+A dashboard](https://aliphilip05.github.io/Casper-Analysis-Of-E-Galaxies-/)
 
 **Concentration, Asymmetry, and Smoothness (CAS) analysis using data from the Vera C. Rubin Observatory’s Legacy Survey of Space and Time (LSST)**
 

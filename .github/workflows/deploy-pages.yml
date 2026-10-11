@@ -1,4 +1,4 @@
-name: Deploy APhlip.org to GitHub Pages
+name: Deploy CAS dashboard to GitHub Pages
 
 on:
   push:
@@ -35,20 +35,24 @@ jobs:
 
       - name: Assemble static site
         run: |
-          mkdir -p _site/casper
-          cp -R frontend/aphlip.org/. _site/
-          rm -f _site/README.md
-          cp frontend/index.html frontend/styles.css frontend/app.js _site/casper/
+          mkdir -p _site/portfolio _site/casper
+          cp frontend/index.html frontend/styles.css frontend/app.js _site/
+          cp -R frontend/aphlip.org/. _site/portfolio/
+          rm -f _site/portfolio/README.md
           touch _site/.nojekyll
-          python3 - <<'PY'
+          python3 - <<'PYCODE'
           from pathlib import Path
 
-          # The source site sits beside the dashboard in the repository. On Pages,
-          # the personal site is deployed at the root and the dashboard at /casper/.
-          for page in (Path("_site/research.html"), Path("_site/index.html")):
-              content = page.read_text()
-              page.write_text(content.replace('href="../index.html"', 'href="casper/"'))
-          PY
+          # Preserve old dashboard links while publishing it at the site root.
+          Path("_site/casper/index.html").write_text(
+              '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+              '<meta name="viewport" content="width=device-width, initial-scale=1">'
+              '<meta http-equiv="refresh" content="0; url=../">'
+              '<link rel="canonical" href="../">'
+              '<title>CAS / E+A</title></head>'
+              '<body><p><a href="../">Open the CAS / E+A dashboard</a></p></body></html>\n'
+          )
+          PYCODE
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
